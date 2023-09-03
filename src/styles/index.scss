@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+  background: rgb(0, 120, 120);
+  touch-action: manipulation;
+  min-height: 100vh !important;
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgb(255, 255, 255);
+    border-radius: 10px;
+  }
+}
+/* Định dạng nền của div bao quanh nút radio khi nút radio được chọn */
+/* Định dạng màu của label khi nút radio được chọn */
+input[type="radio"]:checked + label.radio-label {
+  background-color: rgb(
+    120,
+    120,
+    242
+  ); /* Đặt màu nền thành xanh khi nút radio được chọn */
+}
+.entry-content,
+.entry-content .ql-snow .ql-editor {
+  font-size: 20px;
+  font-family: "Roboto", sans-serif;
+  line-height: 2.5rem;
+  text-align: justify !important;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: bold;
+    text-transform: capitalize;
+    margin-bottom: 20px;
+    text-align: justify !important;
+  }
+  h1 {
+    font-size: 28px;
+  }
+
+  p {
+    font-size: 20px;
+  }
+  ul {
+    list-style-type: disc;
+  }
+  ol {
+    list-style: decimal;
+  }
+  ul,
+  ol {
+    padding-left: 20px;
+    margin-left: 0;
+    li {
+      margin-bottom: 3px;
+    }
+  }
+  img {
+    margin: 0 auto;
+    border-radius: 5px;
+  }
+  .ql-align-center {
+    text-align: center !important;
+  }
+}
+.quill {
+  position: relative;
+  top: 0;
+  .ql-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: white;
+    height: 90px;
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+    font-size: 2rem;
+  }
+  .ql-container {
+    min-height: 500px;
+  }
+}

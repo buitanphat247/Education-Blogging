@@ -1,17 +1,32 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.js";
+import "./styles/index.scss";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/auth-context.js";
+import { ToastContainer } from "react-toastify";
+import { StyledEngineProvider } from "@mui/material/styles";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+// Ngăn người dùng sử dụng lăn chuột để thu phóng
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <StyledEngineProvider injectFirst>
+    <BrowserRouter>
+      <AuthProvider>
+        <App />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </AuthProvider>
+    </BrowserRouter>
+  </StyledEngineProvider>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
