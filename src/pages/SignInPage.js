@@ -1,46 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Fields from "../Components/field/Fields";
 import Label from "../Components/label/Label";
 import Input from "../Components/input/Input";
-import { useController } from "react-hook-form";
-import { useForm, Controller } from "react-hook-form";
-import IconEyeOpen from "../Components/icon/IconEyeOpen";
-import IconEyeClose from "../Components/icon/IconEyeClose";
-import Button from "../Components/button/Button";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { ToastContainer, toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase-app/firebaseconfig";
+import { auth } from "../firebase-app/firebaseconfig";
 import { NavLink, useNavigate } from "react-router-dom";
-import useAuth from "../context/auth-context";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import InputToggle from "../hooks/InputToggle";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import Button from "../Components/button/Button";
+const schema = yup
+  .object()
+  .shape({
+    email: yup.string().required("Email is required"),
+    password: yup.string().required("Password is required"),
+  })
+  .required();
 
-const schema = yup.object().shape({
-  email: yup.string().required("Email is required").email("Wrong email format"),
-  password: yup.string().required("Password is required"),
-});
 const SignInPage = () => {
+  // hàm chuyển hướng
   const navigate = useNavigate();
-  const { userInfor, setUserInfor } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
+
+  // react hook form
   const {
     handleSubmit,
     control,
     formState: { errors, isValid, isSubmitting },
   } = useForm({
-    // resolver: yupResolver(schema),
+    resolver: yupResolver(schema),
   });
+
+  // xử lí sự kiện đăng nhập
   const handleSignIn = async (data) => {
     if (!isValid) return;
     try {
-      const cred = await signInWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
+      await signInWithEmailAndPassword(auth, data.email, data.password);
       toast.success("Login successfully", {
         position: "top-right",
         autoClose: 5000,
@@ -63,11 +60,13 @@ const SignInPage = () => {
         progress: undefined,
         theme: "light",
       });
-      navigate("/signup");
     }
   };
+
+  // nếu đăng nhập thật bại hoặc gặp error load thông thông báo toastify
   useEffect(() => {
     const arrErrors = Object.values(errors);
+    
     if (arrErrors.length > 0) {
       toast.error(arrErrors[0].message, {
         position: "top-right",
@@ -84,6 +83,7 @@ const SignInPage = () => {
   return (
     <div className="w-full min-h-[100vh] flex items-center justify-center">
       <div className="bg-gray-700 min-h-[650px] w-[750px] mx-auto p-[50px] rounded-lg shadow-2xl shadow-black">
+        {/* bọc logo */}
         <div className="mx-auto grid justify-center gap-y-3 text-3xl font-bold capitalize text-blue-300">
           <NavLink to="/">
             <img
@@ -94,6 +94,7 @@ const SignInPage = () => {
             <h1>Monkey Blogging</h1>
           </NavLink>
         </div>
+        {/* thành phần form đăng nhập */}
         <form onSubmit={handleSubmit(handleSignIn)} autoComplete="off">
           <Fields>
             <Label htmlFor="email">Email</Label>
@@ -126,13 +127,30 @@ const SignInPage = () => {
               disabled={isSubmitting ? true : false}
             >
               {isSubmitting ? (
-                <div className="h-[30px] w-[30px] rounded-full border-yellow-600 border-[3px] border-r-0 border-l-0 animate-spin"></div>
+                <div className="h-[40px] w-[40px] rounded-full border-white border-[3px] border-l-transparent animate-spin"></div>
               ) : (
                 "Sign In"
               )}
             </Button>
           </div>
         </form>
+        <div className=" my-5 gap-3 flex flex-col">
+          <h1 className="text-gray-400 text-center capitalize text-xl">Or you can Singin With</h1>
+          <div className="flex items-center justify-center gap-x-5">
+            <div className="cursor-pointer text-4xl h-[50px] w-[50px] flex items-center justify-center text-white bg-blue-700 rounded-xl p-0 m-0">
+              <i className="fa-brands fa-facebook"></i>
+            </div>
+            <div className="cursor-pointer text-4xl h-[50px] w-[50px] flex items-center justify-center text-white bg-blue-700 rounded-xl p-0 m-0">
+              <i className="fa-brands fa-github"></i>
+            </div>
+            <div className="cursor-pointer text-4xl h-[50px] w-[50px] flex items-center justify-center text-white bg-blue-700 rounded-xl p-0 m-0">
+              <i className="fa-brands fa-twitter"></i>
+            </div>
+            <div className="cursor-pointer text-4xl h-[50px] w-[50px] flex items-center justify-center text-white bg-blue-700 rounded-xl p-0 m-0">
+              <i className="fa-brands fa-instagram"></i>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

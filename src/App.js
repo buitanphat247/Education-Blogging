@@ -4,6 +4,7 @@ import useAuth from "./context/auth-context";
 import SignUpPage from "./pages/SignUpPage";
 import SignInPage from "./pages/SignInPage";
 import OverViewPage from "./pages/OverViewPage";
+import Album from "./Components/photos/Album";
 const HomePage = lazy(() => import("./pages/HomePage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 const DetailPage = lazy(() => import("./pages/DetailPage"));
@@ -36,15 +37,22 @@ function App() {
         <Routes>
           <Route path="/" element={<Main></Main>}>
             <Route path="/" element={<HomePage></HomePage>}></Route>
-            <Route path="/details-posts" element={<DetailPage></DetailPage>}></Route>
+            <Route
+              path="/details-posts"
+              element={<DetailPage></DetailPage>}
+            ></Route>
             <Route path="/about-page" element={<About></About>}></Route>
-            <Route path="/view-all-posts" element={<OverViewPage></OverViewPage>}></Route>
-         
+            <Route
+              path="/view-all-posts"
+              element={<OverViewPage></OverViewPage>}
+            ></Route>
+            <Route
+              path="/view-all-posts/album-ba-ria-vung-tau"
+              element={<Album></Album>}
+            ></Route>
           </Route>
           {userInfor ? (
             <Route path="/manage" element={<MainDashBoard></MainDashBoard>}>
-             
-
               <Route
                 path="/manage/posts"
                 element={<ManagePost></ManagePost>}

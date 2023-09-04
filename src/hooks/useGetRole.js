@@ -1,21 +1,14 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { db } from "../firebase-app/firebaseconfig";
 import useAuth from "../context/auth-context";
 
-const useGetRole = () => {
+const useGetRole = (id_user) => {
   const [userInfor] = useAuth();
   const [data, setData] = useState("");
   useEffect(() => {
     async function fetchData() {
-      const docRef = doc(db, "users", userInfor.uid);
+      const docRef = doc(db, "users", id_user || userInfor.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setData(docSnap.data());
@@ -25,7 +18,7 @@ const useGetRole = () => {
       }
     }
     fetchData();
-  }, [userInfor.uid]);
+  }, [id_user, userInfor.uid]);
   return { data };
 };
 

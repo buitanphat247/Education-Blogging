@@ -1,13 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import Button from "../../Components/button/Button";
 import PostFeatureItem from "../Posts/PostFeatureItem";
 import Skeleton from "@mui/material/Skeleton";
 // Import Swiper styles
 import "swiper/css";
 import {
   collection,
-  getDocs,
-  limit,
   onSnapshot,
   query,
   where,
@@ -56,8 +53,6 @@ const PostFeature = () => {
         <Swiper
           spaceBetween={20}
           slidesPerView={3}
-          onSlideChange={() => console.log("slide change")}
-          onSwiper={(swiper) => console.log(swiper)}
           centeredSlides={false}
           autoplay={{
             delay: 1500,

@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, {  } from "react";
 import Button from "../../Components/button/Button";
 import ViewDateAuthorUpdate from "../../Components/Card/ViewDateAuthorUpdate";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebase-app/firebaseconfig";
 import useTimeVn from "../../hooks/useTimeVn";
 
 const PostFeatureItem = ({

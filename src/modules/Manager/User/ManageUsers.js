@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import DashBoardContent from "../../../Components/layout/DashBoardContent";
 import { collection, onSnapshot, query } from "firebase/firestore";
-import { auth, db } from "../../../firebase-app/firebaseconfig";
+import { db } from "../../../firebase-app/firebaseconfig";
 import slugify from "slugify";
-import Remove from "../../../Components/actions/Remove";
 import Edit from "../../../Components/actions/Edit";
 import CardUser from "../../../Components/Card/CardUser";
 import { NavLink, useNavigate } from "react-router-dom";
-import { deleteUser } from "firebase/auth";
 import { Button } from "react-bootstrap";
-
+import View from "../../../Components/actions/View";
 const ManageUsers = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
@@ -19,16 +17,23 @@ const ManageUsers = () => {
       onSnapshot(q, (querySnapshot) => {
         const Data = [];
         querySnapshot.forEach((doc) => {
-          Data.push(doc.data());
+          Data.push({
+            doc_id: doc?.id,
+            ...doc.data(),
+          });
         });
         setUser(Data);
       });
     }
     getUser();
   }, []);
-
+  console.log(user);
   const handleEdit = (id) => {
     navigate(`/manage/update-users?id=${id}`);
+  };
+  const handleView = (id) => {
+    console.log(id);
+    navigate(`/manage/profile-user?id=${id}`);
   };
   return (
     <>
@@ -154,8 +159,8 @@ const ManageUsers = () => {
                     </td>
                     <td className="px-5 py-2 capitalize">{item.status}</td>
                     <td className="px-5 py-2 flex  gap-x-5">
+                      <View onClick={() => handleView(item.id)}></View>
                       <Edit onClick={() => handleEdit(item.id)}></Edit>
-                      <Remove></Remove>
                     </td>
                   </tr>
                 );

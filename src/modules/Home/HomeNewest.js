@@ -16,7 +16,7 @@ import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
 const PostNewest = () => {
-  const [isLoading, setIsLoading] = useContext(LoadingContext);
+  const [isLoading] = useContext(LoadingContext);
   const navigate = useNavigate("");
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -32,7 +32,6 @@ const PostNewest = () => {
       setData(data);
     });
   }, []);
-  console.log(data);
   const handleClick = (id) => {
     navigate(`/details-posts?id=${id}`);
   };
@@ -45,8 +44,6 @@ const PostNewest = () => {
         {isLoading === true && (
           <div className="group relative cursor-pointer col-span-2 grid gap-y-3 bg-slate-900 p-3 rounded-lg ">
             <Stack spacing={1} className="col-span-2">
-              {/* For variant="text", adjust the height via font-size */}
-              {/* For other variants, adjust the size with `width` and `height` */}
               <Skeleton variant="rounded" height={280} />
               <Skeleton variant="rectangular" height={20} />
               <Skeleton variant="rectangular" height={20} />
@@ -147,8 +144,6 @@ const PostNewest = () => {
               <Swiper
                 spaceBetween={10}
                 slidesPerView={4}
-                onSlideChange={() => console.log("slide change")}
-                onSwiper={(swiper) => console.log(swiper)}
                 centeredSlides={false}
                 autoplay={{
                   delay: 1500,

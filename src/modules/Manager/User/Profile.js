@@ -4,9 +4,12 @@ import { NavLink } from "react-bootstrap";
 import useGetRole from "../../../hooks/useGetRole";
 import Fields from "../../../Components/field/Fields";
 import useTimeVn from "../../../hooks/useTimeVn";
+import { useSearchParams } from "react-router-dom";
 
 const Profile = () => {
-  const { data } = useGetRole();
+  const [params] = useSearchParams();
+  const params_id = params.get("id");
+  const { data } = useGetRole(params_id);
   const { formattedVNTime } = useTimeVn();
   return (
     <>

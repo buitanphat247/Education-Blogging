@@ -1,40 +1,39 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Components/button/Button";
 import PostItem from "../modules/Posts/PostItem";
-import { useSearchParams } from "react-router-dom";
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
-import AuthorCard from "../Components/Card/AuthorCard";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { collection, doc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../firebase-app/firebaseconfig";
 import parse from "html-react-parser";
-import ViewDateAuthorUpdate from "../Components/Card/ViewDateAuthorUpdate";
+import AuthorCard from "../Components/Card/AuthorCard";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
+import ViewDateAuthorUpdate from "../Components/Card/ViewDateAuthorUpdate";
 
 const About = () => {
-  document.title = "About";
   const [params] = useSearchParams();
   const params_id = params.get("id");
   const [data, setData] = useState("");
   const [url_image_author, set_url_image_author] = useState();
+
   useEffect(() => {
     const q = query(
       collection(db, "posts"),
       where("slug_category", "==", "about")
     );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const data = [];
+    onSnapshot(q, (querySnapshot) => {
       querySnapshot.forEach((doc) => {
         setData(doc.data());
       });
     });
   }, [params_id]);
+
+  // fetch data của card author
   useEffect(() => {
     async function fetchData() {
       if (data !== "") {
@@ -47,6 +46,29 @@ const About = () => {
     }
     fetchData();
   }, [data]);
+
+  const navigate = useNavigate("");
+
+  // fetch data của bài viết đề xuất
+  const [data_posts, setDataPosts] = useState([]);
+  useEffect(() => {
+    const q = query(collection(db, "posts"));
+    onSnapshot(q, (querySnapshot) => {
+      const data = [];
+      querySnapshot.forEach((doc) => {
+        data.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+      setDataPosts(data);
+    });
+  }, []);
+  // xử lí sự kiện click qua item khác
+  const handleClick = (id) => {
+    navigate(`/details-posts?id=${id}`);
+  };
+  // setloading skeleton
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     setTimeout(() => {
@@ -61,7 +83,7 @@ const About = () => {
             {isLoading === true ? (
               <Skeleton variant="rounded" height={300} />
             ) : (
-              <img className="rounded-xl" src={data?.URL_img} alt="" />
+              <img className="rounded-xl w-full" src={data?.URL_img} alt="" />
             )}
           </div>
           <div className="col-span-1 flex flex-col justify-center gap-y-5">
@@ -77,7 +99,7 @@ const About = () => {
                 </Button>
               )}
             </div>
-            <h1 className="text-3xl font-bold line-clamp-3 leading-normal capitalize text-white">
+            <h1 className="text-3xl font-bold  line-clamp-3 leading-normal capitalize text-white">
               {isLoading === true ? (
                 <>
                   <Stack spacing={1}>
@@ -142,42 +164,68 @@ const About = () => {
       </div>
       <div>
         <h1 className="text-3xl text-purple-200 font-bold uppercase ">
-          Bài Viết Liên Quan
+          Bài Viết đề xuất
         </h1>
-        <div className="grid grid-cols-4 gap-5 py-5">
+        <div className="">
           {isLoading === true && (
             <>
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="group bg-slate-900 p-2 rounded-lg relative   cursor-pointer"
-                >
-                  <div className="rounded-lg overflow-hidden relative h-[200px] ">
-                    <Skeleton variant="rounded" height={200} />
+              <div className="grid grid-cols-4 gap-x-5">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="group bg-slate-900 p-2 rounded-lg relative   cursor-pointer"
+                  >
+                    <div className="rounded-lg overflow-hidden relative h-[200px] ">
+                      <Skeleton variant="rounded" height={200} />
+                    </div>
+                    <div className=" w-full py-2 text-white">
+                      <Stack spacing={1}>
+                        <Skeleton variant="rounded" width={100} height={30} />
+                        <Skeleton variant="rectangular" height={10} />
+                        <Skeleton variant="rectangular" height={10} />
+                        <Skeleton variant="rectangular" height={10} />
+                        <Skeleton variant="rectangular" height={10} />
+                        <Skeleton variant="rectangular" height={10} />
+                      </Stack>
+                    </div>
                   </div>
-                  <div className=" w-full py-2 text-white">
-                    <Stack spacing={1}>
-                      <Skeleton variant="rounded" width={100} height={30} />
-                      <Skeleton variant="rectangular" height={10} />
-                      <Skeleton variant="rectangular" height={10} />
-                      <Skeleton variant="rectangular" height={10} />
-                      <Skeleton variant="rectangular" height={10} />
-                      <Skeleton variant="rectangular" height={10} />
-                    </Stack>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </>
           )}
           {isLoading === false && (
             <>
-              <PostItem></PostItem>
-              <PostItem></PostItem>
-              <PostItem></PostItem>
-              <PostItem></PostItem>
+              <Swiper
+                spaceBetween={10}
+                slidesPerView={4}
+                centeredSlides={false}
+                autoplay={{
+                  delay: 1500,
+                  disableOnInteraction: false,
+                }}
+                pagination={{
+                  clickable: true,
+                }}
+                modules={[Autoplay, Pagination, Navigation]}
+                className="mySwiper"
+              >
+                {data_posts.length > 0 &&
+                  data_posts.map((item, index) => (
+                    <SwiperSlide key={index}>
+                      <PostItem
+                        name_category={item?.name_category}
+                        title={item?.title}
+                        author={item?.author}
+                        url_image={item?.URL_img}
+                        onClick={() => handleClick(item.id)}
+                      ></PostItem>
+                    </SwiperSlide>
+                  ))}
+              </Swiper>
             </>
           )}
         </div>
+        <></>
       </div>
     </div>
   );

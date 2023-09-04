@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Label from "../Components/label/Label";
 import { useForm } from "react-hook-form";
 import Input from "../Components/input/Input";
-import IconEyeClose from "../Components/icon/IconEyeClose";
 import Fields from "../Components/field/Fields";
-import IconEyeOpen from "../Components/icon/IconEyeOpen";
 import Button from "../Components/button/Button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -13,13 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../firebase-app/firebaseconfig";
 import { NavLink, useNavigate } from "react-router-dom";
-import {
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import InputToggle from "../hooks/InputToggle";
 import slugify from "slugify";
 const schema = yup.object({
@@ -30,10 +22,6 @@ const schema = yup.object({
     .required("Password is required")
     .min(8, "Password must be at least 8 characters")
     .max(32, "Password must be less than 32 characters"),
-  // .matches(
-  //   /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-  //   "Password Must Contain At Least One Uppercase Letter, One Lowercase Letter, One Number, And One Special Character"
-  // ),
 });
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -48,11 +36,7 @@ const SignUpPage = () => {
   const handleSignUp = async (data) => {
     if (!isValid) return;
     try {
-      const user = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
       await updateProfile(auth.currentUser, {
         displayName: data.fullname,
       });
@@ -81,6 +65,7 @@ const SignUpPage = () => {
     }
     navigate("/");
   };
+
   useEffect(() => {
     const arrErrors = Object.values(errors);
     if (arrErrors.length > 0) {
@@ -150,13 +135,32 @@ const SignUpPage = () => {
               disabled={isSubmitting ? true : false}
             >
               {isSubmitting ? (
-                <div className="h-[30px] w-[30px] rounded-full border-yellow-600 border-[3px] border-r-0 border-l-0 animate-spin"></div>
+                <div className="h-[40px] w-[40px] rounded-full border-white border-[3px] border-l-transparent animate-spin"></div>
               ) : (
                 "Sign Up"
               )}
             </Button>
           </div>
         </form>
+        <div className=" my-5 gap-3 flex flex-col">
+          <h1 className="text-gray-400 text-center capitalize text-xl">
+            Or you can Singup With
+          </h1>
+          <div className="flex items-center justify-center gap-x-5">
+            <div className="cursor-pointer text-4xl h-[50px] w-[50px] flex items-center justify-center text-white bg-blue-700 rounded-xl p-0 m-0">
+              <i className="fa-brands fa-facebook"></i>
+            </div>
+            <div className="cursor-pointer text-4xl h-[50px] w-[50px] flex items-center justify-center text-white bg-blue-700 rounded-xl p-0 m-0">
+              <i className="fa-brands fa-github"></i>
+            </div>
+            <div className="cursor-pointer text-4xl h-[50px] w-[50px] flex items-center justify-center text-white bg-blue-700 rounded-xl p-0 m-0">
+              <i className="fa-brands fa-twitter"></i>
+            </div>
+            <div className="cursor-pointer text-4xl h-[50px] w-[50px] flex items-center justify-center text-white bg-blue-700 rounded-xl p-0 m-0">
+              <i className="fa-brands fa-instagram"></i>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
